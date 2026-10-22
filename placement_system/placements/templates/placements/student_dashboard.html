@@ -1,0 +1,90 @@
+
+
+<html>
+<head>
+    <title>Student Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'placements/style.css' %}">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <header class="dashboard-header">
+        <div>
+            <h1>Student Dashboard</h1>
+            <p>Welcome, {{ request.user.username }}!</p>
+        </div>
+        
+    <form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn">
+        Logout
+    </button>
+</form>
+
+    </header>
+
+    <section class="dashboard-cards">
+
+        <div class="dashboard-card">
+            <h3>Total Applications</h3>
+            <p>{{ total_applications }}</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Selected</h3>
+            <p>{{ selected_count }}</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Pending</h3>
+            <p>{{ pending_count }}</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Available Companies</h3>
+            <p>{{ total_companies }}</p>
+        </div>
+
+    </section>
+
+    <section class="recent-section">
+        <h2>Recent Applications</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Job Role</th>
+                    <th>Status</th>
+                    <th>Applied Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for application in recent_applications %}
+                <tr>
+                    <td>{{ application.company.company_name }}</td>
+                    <td>{{ application.company.job_role }}</td>
+                    <td>{{ application.status }}</td>
+                    <td>{{ application.applied_at|date:"d-m-Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">You have not applied for any jobs yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <nav class="dashboard-links">
+        <a href="{% url 'view_companies' %}">View Companies</a>
+        <a href="{% url 'my_applications' %}">My Applications</a>
+    </nav>
+
+</div>
+
+</body>
+</html>

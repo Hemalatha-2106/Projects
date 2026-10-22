@@ -1,0 +1,123 @@
+
+<html >
+<head>
+    <title>Apply for Job</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #6895d4;
+            margin: 0;
+            padding: 40px 15px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: rgb(236, 165, 165);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000015;
+            text-align: center;
+        }
+
+        h2 {
+            color: #243b64;
+        }
+
+        .company-details {
+            background: #e28356;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 8px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .confirm {
+            background: #2563eb;
+            color: white;
+        }
+
+        .cancel {
+            background: #64748b;
+            color: white;
+        }
+
+        .success {
+            color: #15803d;
+            background: #dcfce7;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .warning {
+            color: #92400e;
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Job Application</h2>
+
+        <div class="company-details">
+            <p><strong>Company:</strong> {{ company.company_name }}</p>
+            <p><strong>Job Role:</strong> {{ company.job_role }}</p>
+            <p><strong>Salary:</strong> {{ company.salary }}</p>
+            <p><strong>Eligibility:</strong> {{ company.eligibility }}</p>
+        </div>
+
+        {% if submitted %}
+            {% if message == 'Your application has been submitted successfully!' %}
+                <div class="success">
+                    <h3>Application Confirmed!</h3>
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="warning">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <a href="{% url 'my_applications' %}" class="btn confirm">
+                View My Applications
+            </a>
+
+            <a href="{% url 'view_companies' %}" class="btn cancel">
+                Back to Companies
+            </a>
+
+        {% else %}
+            <p>Are you sure you want to apply for this job?</p>
+
+            <form method="POST"
+                  onsubmit="return confirm('Are you sure you want to submit your job application?');">
+                {% csrf_token %}
+
+                <button type="submit" class="btn confirm">
+                    Confirm Apply
+                </button>
+
+                <a href="{% url 'view_companies' %}" class="btn cancel">
+                    Cancel
+                </a>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>
+

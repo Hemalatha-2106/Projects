@@ -1,0 +1,127 @@
+
+<html>
+<head>
+<title>Available Companies</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'placements/style.css' %}">
+
+    <style>
+        .search-box {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .search-box input {
+            padding: 12px;
+            width: 60%;
+            max-width: 350px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .search-box button,
+        .clear-button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .company-card {
+            border: 1px solid #ebd5d5;
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+            background: rgb(212, 209, 28);
+        }
+
+        .company-card h3 {
+            margin-top: 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Available Companies</h1>
+
+    <!-- Company Search -->
+    <form method="GET" class="search-box">
+        <input
+            type="text"
+            name="q"
+            placeholder="Search company or job role..."
+            value="{{ query }}"
+        >
+
+        <button type="submit">Search</button>
+
+        <a href="{% url 'view_companies' %}" class="clear-button">
+            Clear
+        </a>
+    </form>
+
+    {% if query %}
+        <p style="text-align:center">
+            Search results for: <strong>{{ query }}</strong>
+        </p>
+    {% endif %}
+
+    <!-- Company List -->
+    {% for company in companies %}
+
+        <div class="company-card">
+
+            <h3>{{ company.company_name }}</h3>
+
+            <p>
+                <strong>Job Role:</strong>
+                {{ company.job_role }}
+            </p>
+
+            <p>
+                <strong>Salary:</strong>
+                {{ company.salary }}
+            </p>
+
+            <p>
+                <strong>Eligibility:</strong>
+                {{ company.eligibility }}
+            </p>
+
+            <a href="{% url 'apply_job' company.id %}">
+                Apply for Job
+            </a>
+
+        </div>
+
+    {% empty %}
+
+        <p style="text-align:center">
+            No companies found. Try another company name or job role.
+        </p>
+
+    {% endfor %}
+
+    <p>
+        <a href="{% url 'home' %}" class="back-link">
+            Back to Home
+        </a>
+    </p>
+
+</div>
+
+</body>
+</html>

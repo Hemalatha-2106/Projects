@@ -1,0 +1,87 @@
+
+<html>
+<head>
+    <title>College Placement System</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'placements/style.css' %}">
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="auth-buttons">
+
+            {% if user.is_authenticated %}
+
+                <span class="welcome-user">
+                    Welcome, {{ user.username }}!
+                </span>
+
+                <a href="/dashboard/" class="auth-link">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'student_profile' %}" class="auth-link">
+                    My Profile
+                </a>
+
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="auth-link logout-link">
+                        Logout
+                    </button>
+                </form>
+
+            {% else %}
+
+                <a href="/student-login/" class="auth-link">
+                    Login
+                </a>
+
+                <a href="/register/" class="auth-link">
+                    Register
+                </a>
+
+            {% endif %}
+
+        </div>
+
+        <h1>College Placement Management System</h1>
+
+        <p style="text-align:center">
+            Welcome to College Placement Portal
+        </p>
+
+        <div class="home-menu">
+
+            {% if request.user.is_authenticated and request.user.is_staff %}
+    <a href="{% url 'add_student' %}">Add Student</a>
+{% endif %}
+
+            <a href="/students/" class="home-link">
+                View Students
+            </a>
+
+            <a href="/companies/" class="home-link">
+                View Companies
+            </a>
+
+            <a href="/my-applications/" class="home-link">
+                My Applications
+            </a>
+
+            <a href="/dashboard/" class="home-link">
+                Student Dashboard
+            </a>
+
+            <a href="{% url 'student_profile' %}" class="home-link">
+                My Profile
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+</html

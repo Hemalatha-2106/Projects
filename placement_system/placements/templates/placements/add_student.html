@@ -1,0 +1,36 @@
+
+{% load static %}
+<html>
+<head>
+    <title>Add Student</title>
+    <link rel="stylesheet" href="{% static 'placements/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Add Student Details</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Name</label>
+            <input type="text" name="name" required>
+
+            <label>Register Number</label>
+            <input type="text" name="register_number" required>
+
+            <label>Department</label>
+            <input type="text" name="department" required>
+
+            <label>CGPA</label>
+            <input type="number" name="cgpa"
+                   min="0" max="10" step="0.01" required>
+
+            <br><br>
+            <button type="submit">Save Student</button>
+        </form>
+
+        <br>
+        <a href="/">Back to Home</a>
+    </div>
+</body>
+</html>

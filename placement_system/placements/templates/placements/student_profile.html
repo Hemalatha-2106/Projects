@@ -1,0 +1,25 @@
+
+<html>
+<head>
+    <title>Student Profile</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'placements/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>My Student Profile</h1>
+
+        {% if student %}
+            <p><strong>Name:</strong> {{ student.name }}</p>
+            <p><strong>Register Number:</strong> {{ student.register_number }}</p>
+            <p><strong>Department:</strong> {{ student.department }}</p>
+            <p><strong>CGPA:</strong> {{ student.cgpa }}</p>
+        {% else %}
+            <p>Student details not found.</p>
+            <p>Please contact the administrator to link your profile.</p>
+        {% endif %}
+
+        <a href="/student-home/">Back to Home</a>
+    </div>
+</body>
+</html>

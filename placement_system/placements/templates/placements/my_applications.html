@@ -1,0 +1,42 @@
+
+{% load static %}
+<html>
+<head>
+    <title>My Applications</title>
+    <link rel="stylesheet" href="{% static 'placements/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>My Job Applications</h2>
+
+        <table>
+            <tr>
+                <th>Company</th>
+                <th>Job Role</th>
+                <th>Salary</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+            </tr>
+
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.company.company_name }}</td>
+                <td>{{ application.company.job_role }}</td>
+                <td>{{ application.company.salary }}</td>
+                <td>{{ application.status }}</td>
+                <td>{{ application.applied_at|date:"d-m-Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">You have not applied for any jobs yet.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+        <a href="{% url 'view_companies' %}">Back to Companies</a><br><br>
+        <br><br>
+        <a href="{% url 'student_home' %}">Student Home</a>
+    </div>
+</body>
+</html>

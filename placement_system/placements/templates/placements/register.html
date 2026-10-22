@@ -1,0 +1,57 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link rel="stylesheet" href="{% static 'placements/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Student Registration</h2>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Username</label>
+            <input type="text" name="username"
+                   placeholder="Create username" required>
+
+            <label>Password</label>
+            <input type="password" name="password"
+                   placeholder="Minimum 8 characters"
+                   minlength="8" required>
+
+            <label>Full Name</label>
+            <input type="text" name="name"
+                   placeholder="Enter full name" required>
+
+            <label>Register Number</label>
+            <input type="text" name="register_number"
+                   placeholder="Enter register number" required>
+
+            <label>Department</label>
+            <input type="text" name="department"
+                   placeholder="Enter department" required>
+
+            <label>CGPA</label>
+            <input type="number" name="cgpa"
+                   placeholder="Enter CGPA"
+                   min="0" max="10" step="0.01" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <p>Already have an account?
+            <a href="{% url 'student_login' %}">Login</a>
+        </p>
+    </div>
+</body>
+</html>
+

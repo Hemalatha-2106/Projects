@@ -1,0 +1,47 @@
+
+{% load static %}
+<html>
+<head>
+    <title>Student Login</title>
+    <link rel="stylesheet" href="{% static 'placements/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Student Login</h2>
+
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
+
+            <label>Username</label>
+            <input
+                type="text"
+                name="username"
+                autocomplete="off"
+                required
+            >
+
+            <br><br>
+
+            <label>Password</label>
+            <input
+                type="password"
+                name="password"
+                autocomplete="new-password"
+                required
+            >
+
+            <br><br>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <p>New student?
+            <a href="{% url 'register' %}">Register here</a>
+        </p>
+    </div>
+</body>
+</html>
