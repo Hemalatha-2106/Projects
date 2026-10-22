@@ -1,0 +1,197 @@
+<html>
+<head>
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #e79e9e;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .card {
+            background: rgb(223, 197, 197);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 7px 0 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .free { color: green; }
+        .message { background: #dff0d8; padding: 10px; }
+        .product { border-bottom: 1px solid #ddd; padding: 8px 0; }
+
+        @media(max-width: 650px) {
+            .container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<a href="{% url 'view_cart' %}">← Back to Cart</a>
+<h2 align="center">Checkout</h2>
+
+{% for message in messages %}
+    <p class="message">{{ message }}</p>
+{% endfor %}
+
+<div class="container">
+
+    <div class="card">
+        <h3>Delivery Address</h3>
+
+        <form method="POST" action="{% url 'checkout' %}">
+            {% csrf_token %}
+
+            <label>Saved Address</label>
+            <select id="saved_address" onchange="fillAddress(this)">
+                <option value="">Select address</option>
+
+                {% for item in saved_addresses %}
+                <option
+                    data-name="{{ item.full_name }}"
+                    data-phone="{{ item.phone|default:'' }}"
+                    data-address="{{ item.address }}"
+                    data-city="{{ item.city }}"
+                    data-pincode="{{ item.pincode }}">
+                    {{ item.full_name }} - {{ item.city }}
+                    - {{ item.pincode }}
+                </option>
+                {% empty %}
+                <option disabled>No saved addresses</option>
+                {% endfor %}
+            </select>
+
+            <label>Full Name</label>
+            <input id="full_name" name="full_name"
+                   value="{{ saved_name|default:'' }}" required>
+
+            <label>Phone</label>
+            <input id="phone" name="phone" type="tel"
+                   value="{{ saved_phone|default:'' }}" required>
+
+            <label>Address</label>
+            <textarea id="address" name="address" required></textarea>
+
+            <label>City</label>
+            <input id="city" name="city" required>
+
+            <label>Pincode</label>
+            <input id="pincode" name="pincode"
+                   inputmode="numeric" required>
+
+            <h3>Payment</h3>
+            <p>Cash on Delivery (COD)</p>
+
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Order Summary</h3>
+
+        {% for item in products %}
+        <div class="product">
+            <b>{{ item.product.name }}</b>
+
+            <div class="row">
+                <span>Quantity: {{ item.quantity }}</span>
+                <span>₹{{ item.subtotal|floatformat:2 }}</span>
+            </div>
+        </div>
+        {% empty %}
+            <p>Cart is empty.</p>
+        {% endfor %}
+
+        <div class="row">
+            <span>Subtotal</span>
+            <span>₹{{ total|floatformat:2 }}</span>
+        </div>
+
+        <div class="row">
+            <span>Delivery</span>
+            <span>
+                {% if delivery_charge == 0 %}
+                    <b class="free">FREE</b>
+                {% else %}
+                    ₹{{ delivery_charge|floatformat:2 }}
+                {% endif %}
+            </span>
+        </div>
+
+        {% if total >= 500 %}
+            <p class="free">Free delivery eligible!</p>
+        {% else %}
+            <p>Orders above ₹500 qualify for free delivery.</p>
+        {% endif %}
+
+        <hr>
+
+        <div class="row">
+            <b>Total Amount</b>
+            <b>₹{{ final_total|floatformat:2 }}</b>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function fillAddress(select) {
+    const item = select.options[select.selectedIndex];
+
+    if (!item.value && !item.dataset.name) return;
+
+    document.getElementById("full_name").value =
+        item.dataset.name || "";
+
+    document.getElementById("phone").value =
+        item.dataset.phone || "";
+
+    document.getElementById("address").value =
+        item.dataset.address || "";
+
+    document.getElementById("city").value =
+        item.dataset.city || "";
+
+    document.getElementById("pincode").value =
+        item.dataset.pincode || "";
+}
+</script>
+
+</body>
+</html>
+
+

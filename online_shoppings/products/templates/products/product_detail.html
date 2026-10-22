@@ -1,0 +1,161 @@
+<html>
+<head>
+    <title>{{ product.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #2cb90f;
+            margin: 0;
+        }
+
+        header {
+            background-color: #a8c40a;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        img {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+        }
+
+        .price {
+            color: #e47911;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        button, a {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #2874f0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .review {
+            border-top: 1px solid #ddd;
+            padding: 12px 0;
+        }
+
+        textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            box-sizing: border-box;
+        }
+
+        .stars {
+            color: #e47911;
+            font-size: 20px;
+        }
+
+        .message {
+            padding: 10px;
+            background: #e8f5e9;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Product Details</h1>
+</header>
+
+<div class="card">
+
+    {% for message in messages %}
+        <p class="message">{{ message }}</p>
+    {% endfor %}
+
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+
+    <h2>{{ product.name }}</h2>
+    <p>{{ product.description }}</p>
+    <p>Category: {{ product.category }}</p>
+    <p class="price">₹{{ product.price }}</p>
+    <p>Stock: {{ product.stock }}</p>
+
+    {% if product.stock > 0 %}
+        <form method="POST" action="{% url 'add_to_cart' product.id %}">
+            {% csrf_token %}
+            <button type="submit">Add to Cart</button>
+        </form>
+    {% else %}
+        <p>Out of Stock</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Customer Ratings & Reviews</h2>
+
+    {% if average_rating %}
+        <p class="stars">
+            {{ average_rating|floatformat:1 }} / 5 ★
+        </p>
+    {% else %}
+        <p>No ratings yet. Be the first to review!</p>
+    {% endif %}
+
+    <h3>Write a Review</h3>
+
+    {% if user.is_authenticated %}
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="rating">Your Rating:</label>
+            <select name="rating" id="rating" required>
+                <option value="">Select rating</option>
+                <option value="5">5 - Excellent ★★★★★</option>
+                <option value="4">4 - Very Good ★★★★</option>
+                <option value="3">3 - Good ★★★</option>
+                <option value="2">2 - Fair ★★</option>
+                <option value="1">1 - Poor ★</option>
+            </select>
+
+            <label for="comment">Your Review:</label>
+            <textarea name="comment" id="comment"
+                      rows="4" placeholder="Write your review here..."></textarea>
+
+            <button type="submit">Submit Review</button>
+        </form>
+    {% else %}
+        <p>Please <a href="{% url 'user_login' %}">login</a> to submit a review.</p>
+    {% endif %}
+
+    <h3>Customer Reviews</h3>
+
+    {% for review in reviews %}
+        <div class="review">
+            <strong>{{ review.user.username }}</strong>
+            <p class="stars">{{ review.rating }} / 5 ★</p>
+            <p>{{ review.comment|default:"No written comment." }}</p>
+            <small>{{ review.created_at|date:"d M Y" }}</small>
+        </div>
+    {% empty %}
+        <p>No customer reviews yet.</p>
+    {% endfor %}
+
+    <br>
+    <a href="{% url 'product_list' %}">Back to Products</a>
+
+</div>
+
+</body>
+</html>

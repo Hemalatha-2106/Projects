@@ -1,0 +1,107 @@
+<html>
+<head>
+    <title>My Orders</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: green;
+        }
+
+        .order {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .status {
+            color: green;
+            font-weight: bold;
+        }
+
+        button {
+            background: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            color: green;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>My Orders</h1>
+{% if messages %}
+    {% for message in messages %}
+        <p style="text-align:center; color:green;">
+            {{ message }}
+        </p>
+    {% endfor %}
+{% endif %}
+
+{% for order in orders %}
+
+<div class="order">
+
+    <h3>Order #{{ order.id }}</h3>
+
+    <p><b>Total:</b> ₹{{ order.total_amount }}</p>
+
+    <p>Status:
+        <span class="status">{{ order.status }}</span>
+    </p>
+
+    <h4>Products</h4>
+
+    {% for item in order.items.all %}
+        <p>
+            {{ item.product.name }} -
+            Quantity: {{ item.quantity }}
+        </p>
+    {% endfor %}
+
+    {% if order.status == 'Order Placed' %}
+        <form method="POST"
+              action="{% url 'cancel_order' order.id %}">
+            {% csrf_token %}
+
+            <button type="submit"
+                onclick="return confirm('Are you sure you want to cancel this order?')">
+                Cancel Order
+            </button>
+        </form>
+    {% endif %}
+
+</div>
+
+{% empty %}
+    <p style="text-align:center;">No orders found.</p>
+{% endfor %}
+
+<p style="text-align:center;">
+    <a href="{% url 'product_list' %}">Continue Shopping</a>
+</p>
+
+</body>
+</html>

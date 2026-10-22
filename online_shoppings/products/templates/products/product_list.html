@@ -1,0 +1,194 @@
+
+<html>
+<head>
+    <title>Online Shopping</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #a9eca7;
+            margin: 0;
+        }
+
+        header {
+            background: #d85bd8;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        header a {
+            color: white;
+            margin: 10px;
+        }
+
+        .filter {
+            background: rgb(240, 214, 214);
+            padding: 15px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgb(228, 166, 166);
+            width: 230px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px #ccc;
+        }
+
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+        }
+
+        .price {
+            color: green;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        button {
+            background: #2874f0;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .card button {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1> KH Online Shopping</h1>
+    <p>Welcome to our store!</p>
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'user_logout' %}">Logout</a>
+    {% else %}
+        <a href="{% url 'user_login' %}">Login</a>
+        <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+
+    <a href="{% url 'view_cart' %}"> View Cart</a>
+</header>
+
+<div class="filter">
+    <form method="GET">
+
+        <input type="text" name="search"
+               placeholder="Search products..."
+               value="{{ request.GET.search|default:'' }}">
+
+        <select name="category">
+            <option value="">All Categories</option>
+            <option value="Electronics"
+                {% if request.GET.category == 'Electronics' %}selected{% endif %}>
+                Electronics
+            </option>
+            <option value="Fashion"
+                {% if request.GET.category == 'Fashion' %}selected{% endif %}>
+                Fashion
+            </option>
+            <option value="Home Appliances"
+                {% if request.GET.category == 'Home Appliances' %}selected{% endif %}>
+                Home Appliances
+            </option>
+            <option value="Books"
+                {% if request.GET.category == 'Books' %}selected{% endif %}>
+                Books
+            </option>
+        </select>
+
+        <select name="sort">
+            <option value="">Sort by Price</option>
+            <option value="low"
+                {% if request.GET.sort == 'low' %}selected{% endif %}>
+                Low to High
+            </option>
+            <option value="high"
+                {% if request.GET.sort == 'high' %}selected{% endif %}>
+                High to Low
+            </option>
+        </select>
+
+        <button type="submit">Search</button>
+        <a href="{% url 'product_list' %}">Clear</a>
+    </form>
+</div>
+
+<div class="products">
+
+    {% for product in products %}
+    <div class="card">
+
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% endif %}
+
+        <h3>
+            <a href="{% url 'product_detail' product.id %}">
+                {{ product.name }}
+            </a>
+        </h3>
+
+        <p>{{ product.description }}</p>
+        <p>Category: {{ product.category }}</p>
+
+        {% if product.discount > 0 %}
+            <p>
+                <del>₹{{ product.price }}</del>
+            </p>
+            <p>{{ product.discount }}% OFF</p>
+            <p class="price">
+                ₹{{ product.discount_price|floatformat:2 }}
+            </p>
+        {% else %}
+            <p class="price">₹{{ product.price }}</p>
+        {% endif %}
+
+        {% if product.stock > 0 %}
+            <p style="color:green">In Stock: {{ product.stock }}</p>
+
+            <form method="POST"
+                  action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <button type="submit">Add to Cart</button>
+            </form>
+        {% else %}
+            <p style="color:red">Out of Stock</p>
+        {% endif %}
+
+    </div>
+    {% empty %}
+        <p>No products found.</p>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>
+
+

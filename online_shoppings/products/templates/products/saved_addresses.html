@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>My Saved Addresses</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #715af3;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: green;
+        }
+
+        .box {
+            background: rgb(181, 185, 240);
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: green;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .address {
+            background: #f9f9f9;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        a {
+            color: green;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>My Saved Addresses</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <p style="text-align:center;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<div class="box">
+    <h3>Add New Address</h3>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Address Label</label>
+        <select name="label">
+            <option value="Home">Home</option>
+            <option value="Work">Work</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label>Full Name</label>
+        <input type="text" name="full_name" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" required>
+
+        <label>Full Address</label>
+        <textarea name="address" required></textarea>
+
+        <label>City</label>
+        <input type="text" name="city" required>
+
+        <label>PIN Code</label>
+        <input type="text" name="pincode" required>
+
+        <button type="submit">Save Address</button>
+    </form>
+</div>
+
+<div class="box">
+    <h3>Previously Saved Addresses</h3>
+
+    {% for item in addresses %}
+        <div class="address">
+            <strong>{{ item.label }}</strong>
+            <p>{{ item.full_name }} - {{ item.phone }}</p>
+            <p>{{ item.address }}, {{ item.city }} - {{ item.pincode }}</p>
+        </div>
+    {% empty %}
+        <p>No saved addresses yet.</p>
+    {% endfor %}
+
+    <a href="{% url 'checkout' %}">Go to Checkout</a>
+</div>
+
+</body>
+</html>
